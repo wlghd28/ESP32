@@ -210,11 +210,9 @@ void app_main(void)
         ESP_ERROR_CHECK(esp_netif_dhcpc_stop(eth_netif));
 
         esp_netif_ip_info_t ip_info;
-
-        IP4_ADDR(&ip_info.ip, 192, 168, 1, 222);
-        IP4_ADDR(&ip_info.gw, 192, 168, 1, 1);
-        IP4_ADDR(&ip_info.netmask, 255, 255, 255, 0);
-
+        ip_info.ip.addr = inet_addr(CONFIG_EXAMPLE_STATIC_IP_ADDR);
+        ip_info.gw.addr = inet_addr(CONFIG_EXAMPLE_STATIC_GW_ADDR);
+        ip_info.netmask.addr = inet_addr(CONFIG_EXAMPLE_STATIC_NETMASK_ADDR);
         ESP_ERROR_CHECK(esp_netif_set_ip_info(eth_netif, &ip_info));
 
         // Attach Ethernet driver to TCP/IP stack
