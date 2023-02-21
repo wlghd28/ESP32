@@ -1,0 +1,173 @@
+menu "Example Configuration"   
+    config EXAMPLE_STATIC_IP_ADDR
+        string "Static IP address"
+        default "192.168.1.222"
+        help
+            Set static IP address.
+
+    config EXAMPLE_STATIC_NETMASK_ADDR
+        string "Static netmask address"
+        default "255.255.255.0"
+        help
+            Set static netmask address.
+
+    config EXAMPLE_STATIC_GW_ADDR
+        string "Static gateway address"
+        default "192.168.1.1"
+        help
+            Set static gateway address.
+
+    choice EXAMPLE_STATIC_DNS_SERVER
+        prompt "Choose DNS server"
+        default EXAMPLE_STATIC_DNS_AUTO
+        help
+            Select auto to make gateway address as DNS server or manual to input your DNS server
+        config EXAMPLE_STATIC_DNS_AUTO
+            bool "Use gateway address as DNS server"
+            help
+                Set DNS server the same as gateway address
+
+        config EXAMPLE_STATIC_DNS_MANUAL
+            bool "Set manual value as DNS server"
+            help
+                Set DNS server with you want
+    endchoice
+
+    config EXAMPLE_STATIC_DNS_SERVER_MAIN
+        string "Main DNS server address"
+        default "192.168.4.1"
+        depends on EXAMPLE_STATIC_DNS_MANUAL
+        help
+            Set main DNS server address.
+
+    config EXAMPLE_STATIC_DNS_SERVER_BACKUP
+        string "Backup DNS server address"
+        default "192.168.4.1"
+        depends on EXAMPLE_STATIC_DNS_MANUAL
+        help
+            Set backup DNS server address. It can be same with the main DNS server address or leave empty.
+
+    config EXAMPLE_STATIC_DNS_RESOLVE_TEST
+        bool "Enable DNS resolve test"
+        default n
+        help
+            Enable it and configure EXAMPLE_STATIC_RESOLVE_DOMAIN to resolve DNS domain name
+
+    config EXAMPLE_STATIC_RESOLVE_DOMAIN
+        string "Domain name to resolve"
+        default "www.espressif.com"
+        depends on EXAMPLE_STATIC_DNS_RESOLVE_TEST
+        help
+            Set domain name for DNS test
+
+    choice EXAMPLE_IP_MODE
+        prompt "IP Version"
+        depends on EXAMPLE_SOCKET_IP_INPUT_STRING
+        help
+            Example can use either IPV4 or IPV6.
+
+        config EXAMPLE_IPV4
+            bool "IPV4"
+
+        config EXAMPLE_IPV6
+            bool "IPV6"
+
+    endchoice
+
+    config EXAMPLE_IPV4_ADDR
+        string "IPV4 Address"
+        default "192.168.1.252"
+        depends on EXAMPLE_IPV4
+        help
+            The example will connect to this IPV4 address.
+
+    config EXAMPLE_IPV6_ADDR
+        string "IPV6 Address"
+        default "FE80::30AD:E57B:C212:68AD"
+        depends on EXAMPLE_IPV6
+        help
+            The example will connect to this IPV6 address.
+
+    config EXAMPLE_PORT
+        int "Port"
+        range 0 65535
+        default 8010
+        help
+            The remote port to which the client example will connect to.
+
+    choice EXAMPLE_SOCKET_IP_INPUT
+        prompt "Socket example source"
+        default EXAMPLE_SOCKET_IP_INPUT_STRING
+        help
+            Selects the input source of the IP used in the example.
+
+        config EXAMPLE_SOCKET_IP_INPUT_STRING
+            bool "From string"
+
+        config EXAMPLE_SOCKET_IP_INPUT_STDIN
+            bool "From stdin"
+    endchoice
+endmenu
+
+
+
+menu "Connection Configuration"
+    config EXAMPLE_USE_INTERNAL_ETHERNET
+        depends on SOC_EMAC_SUPPORTED
+        select ETH_USE_ESP32_EMAC
+        default y
+        bool "Internal EMAC"
+        help
+            Use internal Ethernet MAC controller.
+
+    if EXAMPLE_USE_INTERNAL_ETHERNET
+        choice EXAMPLE_ETH_PHY_MODEL
+            prompt "Ethernet PHY Device"
+            default EXAMPLE_ETH_PHY_LAN87XX
+            help
+                Select the Ethernet PHY device to use in the example.
+
+            config EXAMPLE_ETH_PHY_LAN87XX
+                bool "LAN87xx"
+                help
+                    Below chips are supported:
+                    LAN8710A is a small footprint MII/RMII 10/100 Ethernet Transceiver with HP Auto-MDIX and
+                        flexPWR® Technology.
+                    LAN8720A is a small footprint RMII 10/100 Ethernet Transceiver with HP Auto-MDIX Support.
+                    LAN8740A/LAN8741A is a small footprint MII/RMII 10/100 Energy Efficient Ethernet Transceiver
+                        with HP Auto-MDIX and flexPWR® Technology.
+                    LAN8742A is a small footprint RMII 10/100 Ethernet Transceiver with HP Auto-MDIX and
+                        flexPWR® Technology.
+                    Goto https://www.microchip.com for more information about them.
+        endchoice # EXAMPLE_ETH_PHY_MODEL
+        config EXAMPLE_ETH_MDC_GPIO
+            int "SMI MDC GPIO number"
+            #range ENV_GPIO_RANGE_MIN ENV_GPIO_OUT_RANGE_MAX
+            default 23
+            help
+                Set the GPIO number used by SMI MDC.
+
+        config EXAMPLE_ETH_MDIO_GPIO
+            int "SMI MDIO GPIO number"
+            #range ENV_GPIO_RANGE_MIN ENV_GPIO_OUT_RANGE_MAX
+            default 18
+            help
+                Set the GPIO number used by SMI MDIO.
+                    
+        config EXAMPLE_ETH_PHY_RST_GPIO
+            int "PHY Reset GPIO number"
+            #range -1 ENV_GPIO_OUT_RANGE_MAX
+            default 5
+            help
+                Set the GPIO number used to reset PHY chip.
+                Set to -1 to disable PHY chip hardware reset.
+
+        config EXAMPLE_ETH_PHY_ADDR
+            int "PHY Address"
+            #range 0 31
+            default 1
+            help
+                Set PHY address according your board schematic.
+
+    endif # EXAMPLE_USE_INTERNAL_ETHERNET    
+endmenu
