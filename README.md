@@ -9,6 +9,5 @@
 - Platform IO
 
 # 참고자료
-- (https://docs.espressif.com/projects/esp-idf/en/latest/esp32/index.html)
-- (https://docs.espressif.com/projects/esp-idf/en/latest/esp32/esp-idf-en-v5.1-dev-3163-g25a56d13d7-esp32.pdf)
-- (https://www.youtube.com/watch?v=NCGy5GwpKHI)
+- [ESP Programming Guide](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/index.html)
+- [8048S070 Turorial](https://www.youtube.com/watch?v=NCGy5GwpKHI)
